@@ -51,7 +51,7 @@ d3.csv("data/scatter-data.csv").then((data) => {
 
 
 // read data and create plot
-d3.csv("data/bar-data.csv").then((data) => {
+d3.csv("data/scatter-data.csv").then((data) => {
 
 });
 
@@ -114,3 +114,92 @@ function setup_border() {
 
 // Set up the event listeners intially 
 setup_border()
+
+
+// Bar Chart 
+
+const BAR = d3.select("#left")
+                  .append("svg")
+                    .attr("height", FRAME_HEIGHT)
+                    .attr("width", FRAME_WIDTH)
+                    .attr("class", "frame"); 
+
+
+function build_interatctive_plot() {
+    // read data and create plot
+    d3.csv("data/bar-data.csv").then((data) => {
+
+
+    const X_SCALE2 = d3.scaleLinear() 
+                      .domain([0, 8]) // 7 categories so 8 is 1 of padding
+                      .range([0, VIS_WIDTH]); 
+
+    const Y_SCALE2 = d3.scaleLinear() 
+                      .domain([100, 0]) // max is 99 so some padding  
+                      .range([0, VIS_WIDTH]); 
+
+    // Use X_SCALE to plot our points
+    BAR.selectAll(".bar")  
+        .data(data) // passed from .then  
+        .enter()     
+        .append("rect")  
+            .attr("x", (d) => { return (X_SCALE2(d.category.charCodeAt(0) - 64) + MARGINS.left); }) 
+            .attr("y", (d) => { return (Y_SCALE2(d.amount) + MARGINS.bottom); }) 
+            .attr("width", 35)
+            .attr("height", (d) => { return VIS_HEIGHT - Y_SCALE2(d.amount); })
+            .attr("class", "bar"); 
+
+     // Tooltip
+    const TOOLTIP = d3.select("left")
+                        .append("div")
+                          .attr("class", "tooltip")
+                          .style("opacity", 0); 
+
+    // Define event handler functions for tooltips
+    function handleMouseover(event, d) {
+      // on mouseover, make opaque 
+      TOOLTIP.style("opacity", 1); 
+      
+    }
+
+    function handleMousemove(event, d) {
+      // position the tooltip and fill in information 
+      TOOLTIP.html("Category: " + d.category + "<br>Value: " + d.amount)
+              .style("left", (event.pageX + 10) + "px") //add offset
+                                                          // from mouse
+              .style("top", (event.pageY - 50) + "px"); 
+    }
+
+    function handleMouseleave(event, d) {
+      // on mouseleave, make transparant again 
+      TOOLTIP.style("opacity", 0); 
+    } 
+
+    // Add event listeners
+    BAR.selectAll(".bar")
+          .on("mouseover", handleMouseover) //add event listeners
+          .on("mousemove", handleMousemove)
+          .on("mouseleave", handleMouseleave);  
+
+     // Add an axis to the vis  
+    BAR.append("g") 
+        .attr("transform", "translate(" + MARGINS.left + 
+              "," + (VIS_HEIGHT + MARGINS.top) + ")") 
+        .call(d3.axisBottom(X_SCALE2).ticks(6)) 
+          .attr("font-size", '20px'); 
+
+    BAR.append("g") 
+        .attr("transform", "translate(" + MARGINS.bottom + 
+              "," + (VIS_WIDTH - 7 * MARGINS.left) + ")") 
+        .call(d3.axisLeft(Y_SCALE2).ticks(4)) 
+          .attr("font-size", '20px'); 
+  
+  
+
+
+    });
+}
+
+build_interatctive_plot()
+
+
