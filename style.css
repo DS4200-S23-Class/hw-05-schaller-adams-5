@@ -23,3 +23,27 @@ body {
     padding-right: 10px;
     object-fit: contain;
 }
+
+.point {
+    fill:hotpink;
+}
+
+.point:hover {
+    fill:deeppink;
+}
+
+.borderPoint {
+    fill:hotpink;
+    stroke-width: 5px;
+    stroke: black;
+}
+
+.borderPoint:hover {
+    fill:deeppink;
+    stroke-width: 5px;
+    stroke: black;
+}
+
+.axis {
+    fill: black;
+}
