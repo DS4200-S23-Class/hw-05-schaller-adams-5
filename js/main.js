@@ -13,7 +13,7 @@ const Y_SCALE = d3.scaleLinear()
                       .domain([(10), 0]) // padding  
                       .range([0, VIS_HEIGHT]); 
 
-const SCATTER = d3.select("#left")
+const SCATTER = d3.select("#vis-scatter")
                   .append("svg")
                     .attr("height", FRAME_HEIGHT)
                     .attr("width", FRAME_WIDTH)
@@ -118,7 +118,7 @@ setup_border()
 
 // Bar Chart 
 
-const BAR = d3.select("#left")
+const BAR = d3.select("#vis-bar")
                   .append("svg")
                     .attr("height", FRAME_HEIGHT)
                     .attr("width", FRAME_WIDTH)
@@ -130,27 +130,30 @@ function build_interatctive_plot() {
     d3.csv("data/bar-data.csv").then((data) => {
 
 
-    const X_SCALE2 = d3.scaleLinear() 
-                      .domain([0, 8]) // 7 categories so 8 is 1 of padding
-                      .range([0, VIS_WIDTH]); 
+    const X_SCALE2 = d3.scaleBand() 
+                      .domain(["A", "B", "C", "D", "E", "F", "G"]) 
+                      .range([0, 400])
+                      .paddingInner(0.1)
+                      .paddingOuter(0.30); 
 
     const Y_SCALE2 = d3.scaleLinear() 
                       .domain([100, 0]) // max is 99 so some padding  
                       .range([0, VIS_WIDTH]); 
 
-    // Use X_SCALE to plot our points
-    BAR.selectAll("bars")  
+    // plot our points
+    BAR.selectAll("bar")  
         .data(data) // passed from .then  
         .enter()     
         .append("rect")  
-            .attr("x", (d) => { return (X_SCALE2(d.category.charCodeAt(0) - 64) + MARGINS.left); }) 
-            .attr("y", (d) => { return (Y_SCALE2(d.amount) + MARGINS.bottom); }) 
-            .attr("width", 35)
-            .attr("height", (d) => { return VIS_HEIGHT - Y_SCALE2(d.amount); })
+            .attr("x", (d) => { return ((X_SCALE2(d.category)) + MARGINS.left); }) 
+            //.attr("y", (d) => { return (Y_SCALE2(d.amount) + MARGINS.bottom); }) 
+            .attr("y", (d) => { return (VIS_HEIGHT - (Y_SCALE2(d.amount)) + MARGINS.top); }) 
+            .attr("width", X_SCALE2.bandwidth())
+            .attr("height", (d) => { return Y_SCALE2(d.amount); })
             .attr("class", "bar"); 
 
      // Tooltip
-    const TOOLTIP = d3.select("left")
+    const TOOLTIP = d3.select("#left")
                         .append("div")
                           .attr("class", "tooltip")
                           .style("opacity", 0); 
@@ -158,8 +161,7 @@ function build_interatctive_plot() {
     // Define event handler functions for tooltips
     function handleMouseover(event, d) {
       // on mouseover, make opaque 
-      TOOLTIP.style("opacity", 1); 
-      
+      TOOLTIP.style("opacity", 1);       
     }
 
     function handleMousemove(event, d) {
@@ -185,7 +187,7 @@ function build_interatctive_plot() {
     BAR.append("g") 
         .attr("transform", "translate(" + MARGINS.left + 
                 "," + (VIS_HEIGHT + MARGINS.top) + ")") 
-        .call(d3.axisBottom(X_SCALE2).ticks(9)) // seems as though tick marks arent changing when you change this number
+        .call(d3.axisBottom(X_SCALE2))
           .attr("font-size", '20px'); // if it were working i think we coul just add .tickValues(["a", "b", "c", "d", "e", "f"])
 
     BAR.append("g") 
@@ -193,8 +195,6 @@ function build_interatctive_plot() {
               "," + (VIS_WIDTH - 7 * MARGINS.left) + ")") 
         .call(d3.axisLeft(Y_SCALE2).ticks(4)) 
           .attr("font-size", '20px'); 
-  
-
     });
 }
 
