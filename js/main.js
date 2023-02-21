@@ -147,9 +147,10 @@ function build_interatctive_plot() {
         .append("rect")  
             .attr("x", (d) => { return ((X_SCALE2(d.category)) + MARGINS.left); }) 
             //.attr("y", (d) => { return (Y_SCALE2(d.amount) + MARGINS.bottom); }) 
-            .attr("y", (d) => { return (VIS_HEIGHT - (Y_SCALE2(d.amount)) + MARGINS.top); }) 
+            //.attr("y", (d) => { return (VIS_HEIGHT - (Y_SCALE2(d.amount)) + MARGINS.top); }) 
+            .attr("y", (d) => { return (Y_SCALE2(d.amount) + MARGINS.top); }) 
             .attr("width", X_SCALE2.bandwidth())
-            .attr("height", (d) => { return Y_SCALE2(d.amount); })
+            .attr("height", (d) => { return VIS_HEIGHT - Y_SCALE2(d.amount); })
             .attr("class", "bar"); 
 
      // Tooltip
@@ -188,7 +189,7 @@ function build_interatctive_plot() {
         .attr("transform", "translate(" + MARGINS.left + 
                 "," + (VIS_HEIGHT + MARGINS.top) + ")") 
         .call(d3.axisBottom(X_SCALE2))
-          .attr("font-size", '20px'); // if it were working i think we coul just add .tickValues(["a", "b", "c", "d", "e", "f"])
+          .attr("font-size", '20px'); 
 
     BAR.append("g") 
         .attr("transform", "translate(" + MARGINS.bottom + 
