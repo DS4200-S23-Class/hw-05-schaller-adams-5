@@ -139,7 +139,7 @@ function build_interatctive_plot() {
                       .range([0, VIS_WIDTH]); 
 
     // Use X_SCALE to plot our points
-    BAR.selectAll(".bar")  
+    BAR.selectAll("bars")  
         .data(data) // passed from .then  
         .enter()     
         .append("rect")  
@@ -181,12 +181,12 @@ function build_interatctive_plot() {
           .on("mousemove", handleMousemove)
           .on("mouseleave", handleMouseleave);  
 
-     // Add an axis to the vis  
+     // Add an axis to the vis 
     BAR.append("g") 
         .attr("transform", "translate(" + MARGINS.left + 
-              "," + (VIS_HEIGHT + MARGINS.top) + ")") 
-        .call(d3.axisBottom(X_SCALE2).ticks(6)) 
-          .attr("font-size", '20px'); 
+                "," + (VIS_HEIGHT + MARGINS.top) + ")") 
+        .call(d3.axisBottom(X_SCALE2).ticks(9)) // seems as though tick marks arent changing when you change this number
+          .attr("font-size", '20px'); // if it were working i think we coul just add .tickValues(["a", "b", "c", "d", "e", "f"])
 
     BAR.append("g") 
         .attr("transform", "translate(" + MARGINS.bottom + 
@@ -194,8 +194,6 @@ function build_interatctive_plot() {
         .call(d3.axisLeft(Y_SCALE2).ticks(4)) 
           .attr("font-size", '20px'); 
   
-  
-
 
     });
 }
