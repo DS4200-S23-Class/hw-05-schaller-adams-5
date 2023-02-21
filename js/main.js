@@ -117,7 +117,6 @@ setup_border()
 
 
 // Bar Chart 
-
 const BAR = d3.select("#vis-bar")
                   .append("svg")
                     .attr("height", FRAME_HEIGHT)
@@ -129,13 +128,14 @@ function build_interatctive_plot() {
     // read data and create plot
     d3.csv("data/bar-data.csv").then((data) => {
 
-
+    // scale for X
     const X_SCALE2 = d3.scaleBand() 
                       .domain(["A", "B", "C", "D", "E", "F", "G"]) 
                       .range([0, 400])
                       .paddingInner(0.1)
                       .paddingOuter(0.30); 
 
+    // sclae for Y
     const Y_SCALE2 = d3.scaleLinear() 
                       .domain([100, 0]) // max is 99 so some padding  
                       .range([0, VIS_WIDTH]); 
@@ -146,8 +146,6 @@ function build_interatctive_plot() {
         .enter()     
         .append("rect")  
             .attr("x", (d) => { return ((X_SCALE2(d.category)) + MARGINS.left); }) 
-            //.attr("y", (d) => { return (Y_SCALE2(d.amount) + MARGINS.bottom); }) 
-            //.attr("y", (d) => { return (VIS_HEIGHT - (Y_SCALE2(d.amount)) + MARGINS.top); }) 
             .attr("y", (d) => { return (Y_SCALE2(d.amount) + MARGINS.top); }) 
             .attr("width", X_SCALE2.bandwidth())
             .attr("height", (d) => { return VIS_HEIGHT - Y_SCALE2(d.amount); })
@@ -199,6 +197,7 @@ function build_interatctive_plot() {
     });
 }
 
+// initalize bar plot
 build_interatctive_plot()
 
 
